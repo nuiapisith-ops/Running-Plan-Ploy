@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ตารางกระชับก้น · คุโรมิ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Itim&family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lav:#AE94E4;          /* พื้นม่วง */
+    --paper:#FFFFFF;
+    --paper-2:#ECE3FB;
+    --line:#281640;         /* ขอบเข้ม ม่วงดำ */
+    --soft:#D2C0EF;
+    --ink:#2E1F4A;
+    --plum:#1E1030;         /* ดำอมม่วง */
+    --muted:#7E6AAC;
+    --num:#3E2580;
+    --glute:#8A57E0;        /* เวท ก้น (ม่วง) */
+    --core:#A96FD8;         /* ก้น & แกน (ม่วงอ่อน) */
+    --cardio:#AE4C92;       /* คาร์ดิโอ (ม่วงอมชมพู) */
+    --walk:#6E7CE8;         /* เดิน (ม่วงคราม) */
+    --rest:#8E7EBC;         /* พัก */
+    --pink:#FF8FC8;         /* แต้มชมพู — เฉพาะกระโหลก */
+    --purple:#7A45D6;       /* ทำเสร็จ/ไฮไลต์ */
+    --warn:#F4A23C;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;color:var(--ink);font-family:"Mali",system-ui,sans-serif;line-height:1.5;
+    background-color:#241439;
+    background-image:
+      linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size:26px 26px;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:560px;margin:0 auto;padding:18px 14px 70px}
+
+  .spark{position:absolute;pointer-events:none}
+  .skull{filter:drop-shadow(2px 3px 0 rgba(30,16,48,.18))}
+
+  /* header */
+  .head{position:relative;background:var(--paper);border:2.5px solid var(--line);
+    border-radius:24px;padding:16px 18px 18px;margin-bottom:16px;box-shadow:0 5px 0 var(--plum);overflow:hidden}
+  .title-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .bigtitle{font-family:"Itim",cursive;font-size:27px;line-height:1.1;color:#F2EAFF;
+    -webkit-text-stroke:2.5px var(--plum);paint-order:stroke fill;text-shadow:2px 3px 0 rgba(122,69,214,.4)}
+  .range{font-size:12px;color:var(--muted);margin:0 0 14px}
+  .meta-row{display:flex;align-items:center;gap:16px}
+  .ring{width:74px;height:74px;flex:none}
+  .ring-tr{stroke:#E7DCFA}
+  .ring-fl{stroke:var(--glute);stroke-linecap:round;transition:stroke-dashoffset .7s cubic-bezier(.2,.7,.2,1)}
+  .ring-n{fill:var(--num);font-family:"Itim",cursive}
+  .goal{font-size:13px;color:var(--ink);font-weight:600}
+  .goal small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:1px}
+  .streak{display:inline-flex;align-items:center;gap:6px;margin-top:9px;background:#2A1840;border:1.5px solid #432a66;
+    color:#D9C2FF;font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:99px}
+
+  /* today banner */
+  .today-banner{background:var(--paper);border:2.5px solid var(--line);border-radius:18px;
+    padding:13px 16px 13px 19px;margin-bottom:16px;box-shadow:0 5px 0 var(--plum);position:relative;overflow:hidden}
+  .today-banner::before{content:"";position:absolute;left:0;top:0;bottom:0;width:7px;background:var(--purple)}
+  .today-banner .lbl{font-size:12.5px;font-weight:700}
+  .today-banner h2{margin:2px 0 3px;font-family:"Itim",cursive;font-size:21px;color:var(--ink)}
+  .today-banner p{margin:0;font-size:13px;color:#6f5d9a}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 15px;margin:0 6px 14px;font-size:12.5px;color:#F2EAFF;font-weight:600}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:11px;height:11px;border-radius:99px;display:inline-block;border:1.5px solid rgba(255,255,255,.55)}
+
+  /* calendar */
+  .cal{display:grid;grid-template-columns:16px repeat(7,1fr);gap:5px}
+  .dow{font-size:11px;color:#F0E7FF;text-align:center;font-weight:700;background:var(--plum);
+    border-radius:9px;padding:5px 0;font-family:"Mali"}
+  .dow.sun{background:#5A3A8C}
+  .dow.sp{background:none}
+  .wlabel{writing-mode:vertical-rl;transform:rotate(180deg);font-size:9.5px;color:#C9B6F0;
+    display:flex;align-items:center;justify-content:center;font-weight:700}
+  .cell{position:relative;background:var(--paper);border:2px solid var(--line);border-radius:15px;
+    padding:5px 3px 7px;min-height:74px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    cursor:pointer;overflow:hidden;box-shadow:0 3px 0 var(--plum);transition:transform .12s,box-shadow .12s}
+  .cell:active{transform:translateY(2px);box-shadow:0 1px 0 var(--plum)}
+  .cell .bar{position:absolute;top:0;left:8px;right:8px;height:4px;border-radius:0 0 5px 5px}
+  .cell .dnum{font-family:"Itim",cursive;font-size:18px;color:var(--num);line-height:1;margin-top:5px}
+  .cell .mon{font-size:8.5px;color:var(--muted);margin-top:1px}
+  .cell .emo{font-size:19px;margin-top:3px;line-height:1}
+  .cell .nm{font-size:9.5px;color:#6f5d9a;margin-top:2px;text-align:center;line-height:1.15;padding:0 1px;font-weight:500}
+  .cell.rest{background:var(--paper-2);opacity:.94}
+  .cell.rest .dnum{color:#a394cc}
+  .cell.past{opacity:.5}
+  .cell .tick{position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:99px;background:var(--purple);
+    color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff;box-shadow:0 1px 2px rgba(40,22,64,.5)}
+  .cell .pend{position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:99px;background:var(--warn);border:1px solid #fff}
+  .cell.today{border-color:var(--purple);box-shadow:0 0 0 3px #D9C2FF,0 4px 0 var(--plum)}
+  .cell .todaypill{position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);
+    background:var(--purple);color:#fff;font-size:8.5px;font-weight:700;padding:1px 8px;border-radius:99px 99px 0 0}
+
+  /* rules */
+  .rules{background:var(--paper);border:2.5px solid var(--line);border-radius:20px;padding:15px 18px;margin-top:22px;box-shadow:0 5px 0 var(--plum)}
+  .rules h3{margin:0 0 10px;color:var(--glute);font-family:"Itim",cursive;font-size:18px}
+  .rules ol{margin:0;padding-left:20px}
+  .rules li{font-size:13.5px;color:#4a3a72;margin-bottom:9px;line-height:1.5}
+  .rules b{color:var(--ink)}
+
+  .foot{font-size:11.5px;color:#C0AEE6;text-align:center;margin-top:18px;line-height:1.6}
+  .foot button{background:#fff;border:2px solid var(--line);color:#5a4785;font-family:inherit;font-size:12px;
+    padding:6px 14px;border-radius:10px;margin-top:10px;cursor:pointer;box-shadow:0 2px 0 var(--plum)}
+
+  /* bottom sheet */
+  .scrim{position:fixed;inset:0;background:rgba(20,10,40,.55);opacity:0;pointer-events:none;transition:.2s;z-index:10}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:11;background:var(--paper);
+    border-radius:26px 26px 0 0;border-top:4px solid var(--purple);
+    transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.7,.2,1);
+    max-width:560px;margin:0 auto;max-height:84vh;overflow-y:auto;padding:8px 18px calc(20px + env(safe-area-inset-bottom))}
+  .sheet.on{transform:translateY(0)}
+  .grab{width:40px;height:5px;background:#D8C8F4;border-radius:99px;margin:8px auto 12px}
+  .sheet .s-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+    padding:4px 12px;border-radius:99px;margin-bottom:8px}
+  .sheet h3{margin:0 0 2px;font-family:"Itim",cursive;font-size:22px;color:var(--ink)}
+  .sheet .s-date{font-size:13px;color:var(--muted);margin:0 0 4px}
+  .sheet .s-focus{font-size:13.5px;color:#5d4d87;margin:0 0 14px}
+  .exlist{list-style:none;margin:0;padding:0}
+  .exlist li{display:flex;justify-content:space-between;gap:14px;padding:11px 2px;border-bottom:1.5px dashed #E0D3F6;font-size:14.5px}
+  .exlist li:last-child{border-bottom:none}
+  .exlist .reps{color:var(--glute);font-weight:700;white-space:nowrap;font-family:"Itim",cursive;font-size:15px}
+  .hint{font-size:13px;color:#6f4eb0;background:#F2ECFC;border:1.5px solid #E0D0F8;padding:10px 12px;border-radius:13px;margin-top:14px}
+  .restmsg{text-align:center;padding:18px 6px;color:#6f5d9a}
+  .restmsg .big{font-size:42px}
+  .doneBtn{width:100%;margin-top:18px;border:none;font-family:"Itim",cursive;font-size:17px;
+    padding:13px;border-radius:16px;cursor:pointer;background:var(--purple);color:#fff;box-shadow:0 4px 0 #5630A8}
+  .doneBtn:active{transform:translateY(3px);box-shadow:0 1px 0 #5630A8}
+  .doneBtn.undo{background:var(--paper-2);color:#6f5d9a;box-shadow:0 4px 0 var(--soft)}
+
+  @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+  :focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <svg class="spark" style="top:10px;right:54px;width:16px" viewBox="0 0 24 24"><path d="M12 0c1 8 4 11 12 12-8 1-11 4-12 12-1-8-4-11-12-12 8-1 11-4 12-12Z" fill="#fff" stroke="#1E1030" stroke-width="1.3"/></svg>
+    <svg class="spark" style="top:40px;right:18px;width:11px" viewBox="0 0 24 24"><path d="M12 0c1 8 4 11 12 12-8 1-11 4-12 12-1-8-4-11-12-12 8-1 11-4 12-12Z" fill="#E2D2FA" stroke="#1E1030" stroke-width="1.3"/></svg>
+    <svg class="spark" style="bottom:14px;right:64px;width:13px" viewBox="0 0 24 24"><path d="M12 0c1 8 4 11 12 12-8 1-11 4-12 12-1-8-4-11-12-12 8-1 11-4 12-12Z" fill="#fff" stroke="#1E1030" stroke-width="1.3"/></svg>
+
+    <div class="title-row">
+      <svg class="skull" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true">
+        <path d="M32 6C19 6 11 15 11 27c0 7 3 11 6 14 1 1 2 3 2 5v3c0 3 2 5 5 5h2v-4a2 2 0 0 1 4 0v4h4v-4a2 2 0 0 1 4 0v4h2c3 0 5-2 5-5v-3c0-2 1-4 2-5 3-3 6-7 6-14C53 15 45 6 32 6Z" fill="#FF8FC8" stroke="#1E1030" stroke-width="2.6" stroke-linejoin="round"/>
+        <ellipse cx="24" cy="28" rx="5.5" ry="6.5" fill="#1E1030"/>
+        <ellipse cx="40" cy="28" rx="5.5" ry="6.5" fill="#1E1030"/>
+        <path d="M32 36c-2 2-3 4-1 5 1 .7 1 .7 2 0 2-1 1-3-1-5Z" fill="#1E1030"/>
+      </svg>
+      <div><div class="bigtitle">กระชับก้น 4 สัปดาห์</div></div>
+    </div>
+    <p class="range" id="rangeSub">13 มิ.ย. – 10 ก.ค. 2026 · แตะวันเพื่อดู &amp; เช็คว่าทำแล้ว 🖤</p>
+
+    <div class="meta-row">
+      <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="ring-tr" cx="50" cy="50" r="42" fill="none" stroke-width="9"/>
+        <circle id="ringFl" class="ring-fl" cx="50" cy="50" r="42" fill="none" stroke-width="9"
+                stroke-dasharray="263.9" stroke-dashoffset="263.9" transform="rotate(-90 50 50)"/>
+        <text id="ringN" class="ring-n" x="50" y="57" text-anchor="middle" font-size="23">0%</text>
+      </svg>
+      <div style="flex:1">
+        <div class="goal">เป้าหมายของพลอย 💜<small>54–55 → 48 กก. · กระชับ + ฟิตขึ้น</small></div>
+        <div class="streak" id="streak">🖤 เริ่มแล้ว!</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="today-banner" id="todayBanner"></div>
+
+  <div class="legend">
+    <span><i style="background:var(--glute)"></i> เวท ก้น</span>
+    <span><i style="background:var(--core)"></i> ก้น &amp; แกน</span>
+    <span><i style="background:var(--cardio)"></i> คาร์ดิโอ</span>
+    <span><i style="background:var(--walk)"></i> เดินยาว</span>
+    <span><i style="background:var(--rest)"></i> พัก</span>
+  </div>
+
+  <div class="cal" id="cal"></div>
+
+  <div class="rules">
+    <h3>🖤 กฎ 3 ข้อ</h3>
+    <ol>
+      <li><b>บีบก้นจริงๆ</b> ทุกครั้งที่ดันสะโพกขึ้น (ค้างบนสุด 1 วินาที) — ฟอร์มถูกสำคัญกว่าจำนวนเยอะ</li>
+      <li><b>กระชับก้นด้วยเวท + ลดไขมันด้วยคาร์ดิโอ</b> ลดเฉพาะจุดไม่ได้จริง ต้องทำคู่กัน</li>
+      <li><b>วันพักคือส่วนหนึ่งของแผน</b> เพลีย/ปวดผิดปกติ → พักได้เลย ไม่ต้องรู้สึกผิด</li>
+    </ol>
+  </div>
+
+  <p class="foot">
+    วันที่พลาดจะมีจุดส้ม “ค้าง” ไว้ให้ตามทำ · วันพักไม่ต้องเช็ค<br>
+    ไม่ใช่คำแนะนำทางการแพทย์ มีโรคประจำตัวควรปรึกษาแพทย์ก่อน
+    <br><button id="resetBtn">ล้างความคืบหน้า</button>
+  </p>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="grab"></div>
+  <div id="sheetBody"></div>
+</div>
+
+<script>
+const START='2026-06-13';
+const WEEKS=4;
+const TODAY_KEY='2026-06-16';
+
+const TYPES={
+  glute:    {label:'เวท ก้น & ขา', short:'เวท ก้น', emoji:'🏋️', color:'var(--glute)', active:true},
+  glutecore:{label:'ก้น & แกนกลาง', short:'ก้น & แกน', emoji:'🍑', color:'var(--core)', active:true},
+  cardio:   {label:'คาร์ดิโอ เดินชัน', short:'คาร์ดิโอ', emoji:'⚡', color:'var(--cardio)', active:true},
+  walk:     {label:'เดินยาวสบายๆ', short:'เดินยาว', emoji:'🚶', color:'var(--walk)', active:true},
+  rest:     {label:'วันพัก', short:'พัก', emoji:'😴', color:'var(--rest)', active:false},
+};
+const PLAN={6:'walk',0:'rest',1:'cardio',2:'glute',3:'rest',4:'glutecore',5:'rest'};
+
+const TH_MON=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const DOW_ORDER=[6,0,1,2,3,4,5];
+const DOW_LBL={6:'ส',0:'อา',1:'จ',2:'อ',3:'พ',4:'พฤ',5:'ศ'};
+
+function workout(type,wk){
+  const W={
+    glute:[
+      {focus:'เริ่มจับฟอร์ม สร้างการรับรู้กล้ามก้น',ex:[['Glute Bridge','3 × 12'],['Sumo Squat','3 × 12'],['Reverse Lunge','3 × 8/ข้าง'],['RDL (ถือขวดน้ำ)','3 × 10'],['Clamshell','2 × 12/ข้าง'],['Glute Kickback','3 × 10/ข้าง']],hint:'ดัน “ส้นเท้า” ลงพื้น แล้วบีบก้นดันสะโพกขึ้น ค้าง 1 วิ'},
+      {focus:'เพิ่มจำนวน เริ่มรู้สึกก้นทำงานชัด',ex:[['Hip Thrust (พิงโซฟา)','3 × 12'],['Sumo Squat','3 × 15'],['Reverse Lunge','3 × 10/ข้าง'],['RDL','3 × 12'],['ก้าวข้าง/Lateral Walk','3 × 10/ข้าง'],['Donkey Kick','3 × 12/ข้าง']],hint:'Hip thrust ให้ไหล่พิงขอบโซฟา เข่างอ 90° บีบก้นสุด'},
+      {focus:'ใส่ขาเดี่ยว ท้าทายก้นมากขึ้น',ex:[['Hip Thrust','4 × 12'],['Bulgarian Split Squat','3 × 8/ข้าง'],['Sumo Squat','4 × 12'],['RDL','3 × 12'],['Single-leg Glute Bridge','3 × 8/ข้าง'],['Fire Hydrant','3 × 12/ข้าง']],hint:'ถ้ามียางยืดคล้องเหนือเข่าจะกระตุ้นก้นด้านข้างได้ดี'},
+      {focus:'เวอร์ชันเต็ม ตอกย้ำความกระชับ',ex:[['Hip Thrust','4 × 15'],['Bulgarian Split Squat','3 × 10/ข้าง'],['Step-up','3 × 10/ข้าง'],['RDL','3 × 15'],['Single-leg Glute Bridge','3 × 10/ข้าง'],['Lateral Walk','3 × 12/ข้าง']],hint:'เทียบสัปดาห์ 1 — น่าจะยกได้นานขึ้น ก้นแน่นขึ้นชัดเจน'},
+    ],
+    glutecore:[
+      {focus:'กระตุ้นก้น + แกนกลางเบาๆ',ex:[['Single-leg Glute Bridge','3 × 8/ข้าง'],['Fire Hydrant','3 × 10/ข้าง'],['Donkey Kick','3 × 10/ข้าง'],['Side-lying Leg Raise','3 × 12/ข้าง'],['Plank','3 × 20 วิ'],['Dead Bug','3 × 8/ข้าง']],hint:'ช้าๆ คุมจังหวะ รู้สึกก้นร้อนๆ = ใช่เลย'},
+      {focus:'เพิ่มความนานของแกนกลาง',ex:[['Single-leg Glute Bridge','3 × 10/ข้าง'],['Fire Hydrant','3 × 12/ข้าง'],['Clamshell','3 × 12/ข้าง'],['Side Leg Raise','3 × 15/ข้าง'],['Plank','3 × 30 วิ'],['Bird Dog','3 × 10/ข้าง']],hint:'แขม่วท้องตลอด หลังตรง อย่าแอ่น'},
+      {focus:'ใส่ลันจ์เฉียง โดนก้นมุมใหม่',ex:[['Glute Bridge March','3 × 12'],['Curtsy Lunge','3 × 10/ข้าง'],['Fire Hydrant','3 × 12/ข้าง'],['Side Plank','2 × 20 วิ/ข้าง'],['Plank','3 × 40 วิ'],['Bicycle Crunch','3 × 12/ข้าง']],hint:'Curtsy lunge ก้าวเฉียงไปข้างหลัง โดนก้นด้านข้างดีมาก'},
+      {focus:'เวอร์ชันเต็ม',ex:[['Glute Bridge March','3 × 15'],['Curtsy Lunge','3 × 12/ข้าง'],['Step-up','3 × 10/ข้าง'],['Side Plank','3 × 25 วิ/ข้าง'],['Plank','3 × 45 วิ'],['Leg Raise','3 × 12']],hint:''},
+    ],
+    cardio:[
+      {focus:'เดินต่อเนื่อง พอเหนื่อยแต่ยังคุยได้',ex:[['วอร์มอัพ เดินเรื่อยๆ','5 นาที'],['เดินชัน / เดินเร็ว','25 นาที'],['คูลดาวน์ + ยืด','5 นาที']],hint:'ระดับเหนื่อย: พูดเป็นประโยคได้ แต่ร้องเพลงไม่ไหว'},
+      {focus:'ยืดเวลาขึ้นนิดหน่อย',ex:[['วอร์มอัพ','5 นาที'],['เดินชัน / เดินเร็ว','30 นาที'],['ช่วงท้ายเร่งให้เร็วขึ้น','5 นาที'],['คูลดาวน์','5 นาที']],hint:'5 นาทีท้ายลองเร่งให้หายใจแรงขึ้น'},
+      {focus:'อินเทอร์วัล สลับเร็ว–ช้า',ex:[['วอร์มอัพ','5 นาที'],['เดินเร็ว 1 นาที / ปกติ 2 นาที','× 6 รอบ'],['คูลดาวน์','5 นาที']],hint:'ช่วง “เร็ว” เหนื่อยพอควร แล้วผ่อนช่วง “ปกติ”'},
+      {focus:'อินเทอร์วัลเพิ่มรอบ',ex:[['วอร์มอัพ','5 นาที'],['เดินเร็ว 1 นาที / ปกติ 2 นาที','× 8 รอบ'],['คูลดาวน์','5 นาที']],hint:'มีทางชันยิ่งดี ใช้แทนช่วง “เร็ว” ได้'},
+    ],
+    walk:[
+      {focus:'ฟื้นตัวแบบขยับร่างกาย',ex:[['เดินเรื่อยๆ','40 นาที'],['ยืดเหยียดทั้งตัว','10 นาที']],hint:'ชวนเพื่อนเดินด้วยกันก็ดี ความเร็วสบายๆ คุยกันได้'},
+      {focus:'เดินนานขึ้นนิด',ex:[['เดินเรื่อยๆ','45 นาที'],['ยืดเหยียด','10 นาที']],hint:''},
+      {focus:'เดินยาวขึ้น',ex:[['เดินเรื่อยๆ','50 นาที'],['ยืดเหยียด','10 นาที']],hint:''},
+      {focus:'ปิดเดือนแบบสบายๆ',ex:[['เดินเรื่อยๆ','50–60 นาที'],['ยืดเหยียดทั้งตัว','10 นาที']],hint:'ครบ 4 สัปดาห์แล้ว! บอกผลมา เดี๋ยวจัดแผนรอบใหม่ให้'},
+    ],
+    rest:[{focus:'ให้กล้ามเนื้อก้น/ขาได้ฟื้นตัว',ex:[],hint:'อยากขยับเบาๆ เดินชันตอนเย็น 30–40 นาที ได้ ถือเป็นโบนัส (ไม่บังคับ)'}],
+  };
+  const arr=W[type]; return arr[Math.min(wk,arr.length-1)];
+}
+
+const fromKey=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d);};
+const toKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
+const startDate=fromKey(START);
+const todayDate=fromKey(TODAY_KEY);
+
+const KEY='gluteplan-kuromi-v2';let mem=null;
+const Store={
+  async load(){try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}}catch(e){}return mem;},
+  async save(s){mem=s;try{if(window.storage){await window.storage.set(KEY,JSON.stringify(s),false);}}catch(e){}}
+};
+let done={};
+
+function dayInfo(date){
+  const key=toKey(date);
+  const type=PLAN[date.getDay()];
+  const wk=Math.floor((date-startDate)/(7*86400000));
+  return {key,date,type,wk,t:TYPES[type],w:workout(type,wk)};
+}
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+
+function render(){
+  const cal=document.getElementById('cal');
+  cal.innerHTML='';
+  cal.appendChild(el('div','dow sp',''));
+  DOW_ORDER.forEach(dw=>cal.appendChild(el('div','dow'+(dw===0?' sun':''),DOW_LBL[dw])));
+
+  let activeTotal=0,activeDone=0;
+  for(let w=0;w<WEEKS;w++){
+    cal.appendChild(el('div','wlabel','สัปดาห์ '+(w+1)));
+    for(const dw of DOW_ORDER){
+      const weekStart=addDays(startDate,w*7);
+      let date=null;
+      for(let i=0;i<7;i++){const d=addDays(weekStart,i);if(d.getDay()===dw){date=d;break;}}
+      const info=dayInfo(date);
+      const isDone=!!done[info.key];
+      const isToday=info.key===TODAY_KEY;
+      const isPast=date<todayDate && !isToday;
+      if(info.t.active){activeTotal++;if(isDone)activeDone++;}
+
+      const c=el('div','cell'+(info.type==='rest'?' rest':'')+(isToday?' today':'')+(isPast?' past':'')+(isDone?' done':''));
+      c.innerHTML=`
+        <span class="bar" style="background:${info.t.color}"></span>
+        <span class="dnum">${date.getDate()}</span>
+        <span class="mon">${TH_MON[date.getMonth()]}</span>
+        <span class="emo">${info.t.emoji}</span>
+        <span class="nm">${info.t.short}</span>
+        ${isDone?'<span class="tick">✓</span>':''}
+        ${(isPast&&!isDone&&info.t.active)?'<span class="pend"></span>':''}
+        ${isToday?'<span class="todaypill">วันนี้</span>':''}`;
+      c.onclick=()=>openSheet(info,isDone);
+      cal.appendChild(c);
+    }
+  }
+
+  const pct=Math.round(activeDone/activeTotal*100);
+  const circ=2*Math.PI*42;
+  document.getElementById('ringFl').setAttribute('stroke-dashoffset',circ*(1-activeDone/activeTotal));
+  document.getElementById('ringN').textContent=pct+'%';
+
+  let s=0,cur=new Date(todayDate);
+  while(cur>=startDate){
+    const inf=dayInfo(cur);
+    if(!inf.t.active){cur=addDays(cur,-1);continue;}
+    if(done[inf.key]){s++;cur=addDays(cur,-1);}else break;
+  }
+  document.getElementById('streak').textContent=s>=2?`🖤 ทำต่อเนื่อง ${s} วัน`:(activeDone>0?'🖤 เริ่มแล้ว! ลุยต่อ':'🖤 พร้อมเริ่ม');
+
+  const ti=dayInfo(todayDate);
+  const tb=document.getElementById('todayBanner');
+  if(done[ti.key]){
+    tb.innerHTML=`<div class="lbl" style="color:var(--purple)">วันนี้</div><h2>ทำครบแล้ว 🎉</h2><p>เก่งมากเลย เวทก้นเรียบร้อย พักผ่อนให้เต็มที่นะ</p>`;
+  }else if(ti.t.active){
+    tb.innerHTML=`<div class="lbl" style="color:${ti.t.color}">วันนี้ · ${ti.t.short}</div><h2>${ti.w.focus}</h2><p>แตะการ์ดวันนี้เพื่อดูท่าและกดเช็ค</p>`;
+  }else{
+    tb.innerHTML=`<div class="lbl" style="color:var(--rest)">วันนี้ · พัก</div><h2>วันพัก 😴</h2><p>ให้ก้นกับขาได้ฟื้นตัว หรือเดินชันเบาๆ ตอนเย็นก็ได้</p>`;
+  }
+}
+
+const scrim=document.getElementById('scrim'),sheet=document.getElementById('sheet'),sb=document.getElementById('sheetBody');
+function openSheet(info,isDone){
+  const d=info.date, t=info.t, w=info.w;
+  let body;
+  if(!t.active){
+    body=`<span class="s-tag" style="background:#EBE2FB;color:#7e6aac">😴 วันพัก</span>
+      <h3>วันพัก</h3><p class="s-date">${d.getDate()} ${TH_MON[d.getMonth()]}</p>
+      <div class="restmsg"><div class="big">😴</div><p>${w.hint}</p></div>`;
+  }else{
+    const rows=w.ex.map(([n,r])=>`<li><span>${n}</span><span class="reps">${r}</span></li>`).join('');
+    const hint=w.hint?`<div class="hint">💡 ${w.hint}</div>`:'';
+    body=`<span class="s-tag" style="background:${t.color}28;color:#5d4d87">${t.emoji} ${t.short}</span>
+      <h3>${t.label}</h3><p class="s-date">${d.getDate()} ${TH_MON[d.getMonth()]} · สัปดาห์ ${info.wk+1}</p>
+      <p class="s-focus">${w.focus}</p>
+      <ul class="exlist">${rows}</ul>${hint}
+      <button class="doneBtn ${isDone?'undo':''}" id="markBtn">${isDone?'✓ ทำแล้ว — แตะเพื่อยกเลิก':'ทำเสร็จแล้ว 🖤'}</button>`;
+  }
+  sb.innerHTML=body;
+  const mb=document.getElementById('markBtn');
+  if(mb)mb.onclick=async()=>{
+    if(done[info.key])delete done[info.key];else done[info.key]=true;
+    await Store.save(done);render();closeSheet();
+  };
+  scrim.classList.add('on');sheet.classList.add('on');
+}
+function closeSheet(){scrim.classList.remove('on');sheet.classList.remove('on');}
+scrim.onclick=closeSheet;
+
+document.getElementById('resetBtn').onclick=async()=>{
+  if(confirm('ล้างความคืบหน้าทั้งหมด?')){done={};await Store.save(done);render();}
+};
+
+(async()=>{
+  const saved=await Store.load();
+  if(saved)done=saved;
+  if(Object.keys(done).length===0){done[TODAY_KEY]=true;await Store.save(done);}
+  render();
+})();
+</script>
+</body>
+</html>
