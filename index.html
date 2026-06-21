@@ -262,8 +262,16 @@ const todayDate=fromKey(TODAY_KEY);
 
 const KEY='gluteplan-kuromi-v2';let mem=null;
 const Store={
-  async load(){try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}}catch(e){}return mem;},
-  async save(s){mem=s;try{if(window.storage){await window.storage.set(KEY,JSON.stringify(s),false);}}catch(e){}}
+  async load(){
+    try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v);}catch(e){}
+    try{if(window.storage){const r=await window.storage.get(KEY);if(r&&r.value)return JSON.parse(r.value);}}catch(e){}
+    return mem;
+  },
+  async save(s){
+    mem=s;
+    try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}
+    try{if(window.storage){await window.storage.set(KEY,JSON.stringify(s),false);}}catch(e){}
+  }
 };
 let done={};
 
@@ -367,8 +375,8 @@ document.getElementById('resetBtn').onclick=async()=>{
 
 (async()=>{
   const saved=await Store.load();
-  if(saved)done=saved;
-  if(Object.keys(done).length===0){done[TODAY_KEY]=true;await Store.save(done);}
+  if(saved){done=saved;}
+  else{done[TODAY_KEY]=true;await Store.save(done);} // ครั้งแรกสุดเท่านั้น
   render();
 })();
 </script>
