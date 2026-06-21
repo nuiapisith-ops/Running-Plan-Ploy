@@ -208,7 +208,6 @@
 <script>
 const START='2026-06-13';
 const WEEKS=4;
-const TODAY_KEY='2026-06-16';
 
 const TYPES={
   glute:    {label:'เวท ก้น & ขา', short:'เวท ก้น', emoji:'🏋️', color:'var(--glute)', active:true},
@@ -258,7 +257,9 @@ const fromKey=k=>{const[y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)
 const toKey=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x;};
 const startDate=fromKey(START);
-const todayDate=fromKey(TODAY_KEY);
+const _now=new Date();
+const todayDate=new Date(_now.getFullYear(),_now.getMonth(),_now.getDate());
+const TODAY_KEY=toKey(todayDate);
 
 const KEY='gluteplan-kuromi-v2';let mem=null;
 const Store={
@@ -375,8 +376,7 @@ document.getElementById('resetBtn').onclick=async()=>{
 
 (async()=>{
   const saved=await Store.load();
-  if(saved){done=saved;}
-  else{done[TODAY_KEY]=true;await Store.save(done);} // ครั้งแรกสุดเท่านั้น
+  if(saved)done=saved;
   render();
 })();
 </script>
